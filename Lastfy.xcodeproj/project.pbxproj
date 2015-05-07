@@ -1,0 +1,537 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3CA499081AFB75ED00B4E6AE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CA499071AFB75ED00B4E6AE /* main.m */; };
+		3CA4990B1AFB75ED00B4E6AE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CA4990A1AFB75ED00B4E6AE /* AppDelegate.m */; };
+		3CA499111AFB75ED00B4E6AE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3CA4990F1AFB75ED00B4E6AE /* Main.storyboard */; };
+		3CA499131AFB75ED00B4E6AE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3CA499121AFB75ED00B4E6AE /* Images.xcassets */; };
+		3CA499161AFB75ED00B4E6AE /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CA499141AFB75ED00B4E6AE /* LaunchScreen.xib */; };
+		3CA499221AFB75ED00B4E6AE /* LastfyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CA499211AFB75ED00B4E6AE /* LastfyTests.m */; };
+		3CA499311AFB84F400B4E6AE /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CA499301AFB84F400B4E6AE /* LoginViewController.m */; };
+		3CE0D3D11AFB999F003013A1 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE0D3D01AFB999F003013A1 /* MainViewController.m */; };
+		73F67985BC6F3468D0B0EB77 /* libPods-Lastfy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AD8216F4FC98F3E4F1BFC5D4 /* libPods-Lastfy.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3CA4991C1AFB75ED00B4E6AE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3CA498FA1AFB75ED00B4E6AE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3CA499011AFB75ED00B4E6AE;
+			remoteInfo = Lastfy;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		3CA499021AFB75ED00B4E6AE /* Lastfy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lastfy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3CA499061AFB75ED00B4E6AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3CA499071AFB75ED00B4E6AE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		3CA499091AFB75ED00B4E6AE /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		3CA4990A1AFB75ED00B4E6AE /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		3CA499101AFB75ED00B4E6AE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		3CA499121AFB75ED00B4E6AE /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		3CA499151AFB75ED00B4E6AE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		3CA4991B1AFB75ED00B4E6AE /* LastfyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LastfyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3CA499201AFB75ED00B4E6AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3CA499211AFB75ED00B4E6AE /* LastfyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LastfyTests.m; sourceTree = "<group>"; };
+		3CA4992F1AFB84F400B4E6AE /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		3CA499301AFB84F400B4E6AE /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		3CE0D3CF1AFB999F003013A1 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		3CE0D3D01AFB999F003013A1 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+		829B71F2DF0C9C85CDF5AEB2 /* Pods-Lastfy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lastfy.release.xcconfig"; path = "Pods/Target Support Files/Pods-Lastfy/Pods-Lastfy.release.xcconfig"; sourceTree = "<group>"; };
+		AD8216F4FC98F3E4F1BFC5D4 /* libPods-Lastfy.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Lastfy.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B67772E3CAD5830A998AD345 /* Pods-Lastfy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lastfy.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Lastfy/Pods-Lastfy.debug.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3CA498FF1AFB75ED00B4E6AE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				73F67985BC6F3468D0B0EB77 /* libPods-Lastfy.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3CA499181AFB75ED00B4E6AE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3CA498F91AFB75ED00B4E6AE = {
+			isa = PBXGroup;
+			children = (
+				3CA499041AFB75ED00B4E6AE /* Lastfy */,
+				3CA4991E1AFB75ED00B4E6AE /* LastfyTests */,
+				3CA499031AFB75ED00B4E6AE /* Products */,
+				E7EE35584D21435EF01AF694 /* Pods */,
+				3E0E365445F66C035F4792CF /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		3CA499031AFB75ED00B4E6AE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3CA499021AFB75ED00B4E6AE /* Lastfy.app */,
+				3CA4991B1AFB75ED00B4E6AE /* LastfyTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3CA499041AFB75ED00B4E6AE /* Lastfy */ = {
+			isa = PBXGroup;
+			children = (
+				3CA4992E1AFB764400B4E6AE /* Classes */,
+				3CA4992D1AFB762D00B4E6AE /* Controller */,
+				3CA4992C1AFB762500B4E6AE /* View */,
+				3CA4992B1AFB761F00B4E6AE /* Model */,
+				3CA499121AFB75ED00B4E6AE /* Images.xcassets */,
+				3CA499051AFB75ED00B4E6AE /* Supporting Files */,
+			);
+			path = Lastfy;
+			sourceTree = "<group>";
+		};
+		3CA499051AFB75ED00B4E6AE /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				3CA499061AFB75ED00B4E6AE /* Info.plist */,
+				3CA499071AFB75ED00B4E6AE /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		3CA4991E1AFB75ED00B4E6AE /* LastfyTests */ = {
+			isa = PBXGroup;
+			children = (
+				3CA499211AFB75ED00B4E6AE /* LastfyTests.m */,
+				3CA4991F1AFB75ED00B4E6AE /* Supporting Files */,
+			);
+			path = LastfyTests;
+			sourceTree = "<group>";
+		};
+		3CA4991F1AFB75ED00B4E6AE /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				3CA499201AFB75ED00B4E6AE /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		3CA4992B1AFB761F00B4E6AE /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		3CA4992C1AFB762500B4E6AE /* View */ = {
+			isa = PBXGroup;
+			children = (
+				3CA4990F1AFB75ED00B4E6AE /* Main.storyboard */,
+				3CA499141AFB75ED00B4E6AE /* LaunchScreen.xib */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		3CA4992D1AFB762D00B4E6AE /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				3CA4992F1AFB84F400B4E6AE /* LoginViewController.h */,
+				3CA499301AFB84F400B4E6AE /* LoginViewController.m */,
+				3CE0D3CF1AFB999F003013A1 /* MainViewController.h */,
+				3CE0D3D01AFB999F003013A1 /* MainViewController.m */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		3CA4992E1AFB764400B4E6AE /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				3CA499091AFB75ED00B4E6AE /* AppDelegate.h */,
+				3CA4990A1AFB75ED00B4E6AE /* AppDelegate.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		3E0E365445F66C035F4792CF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AD8216F4FC98F3E4F1BFC5D4 /* libPods-Lastfy.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E7EE35584D21435EF01AF694 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				B67772E3CAD5830A998AD345 /* Pods-Lastfy.debug.xcconfig */,
+				829B71F2DF0C9C85CDF5AEB2 /* Pods-Lastfy.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3CA499011AFB75ED00B4E6AE /* Lastfy */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3CA499251AFB75ED00B4E6AE /* Build configuration list for PBXNativeTarget "Lastfy" */;
+			buildPhases = (
+				7E38D6B05573F7FE26CDFEB4 /* Check Pods Manifest.lock */,
+				3CA498FE1AFB75ED00B4E6AE /* Sources */,
+				3CA498FF1AFB75ED00B4E6AE /* Frameworks */,
+				3CA499001AFB75ED00B4E6AE /* Resources */,
+				047FA7D7EFAFD012C51AA41E /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Lastfy;
+			productName = Lastfy;
+			productReference = 3CA499021AFB75ED00B4E6AE /* Lastfy.app */;
+			productType = "com.apple.product-type.application";
+		};
+		3CA4991A1AFB75ED00B4E6AE /* LastfyTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3CA499281AFB75ED00B4E6AE /* Build configuration list for PBXNativeTarget "LastfyTests" */;
+			buildPhases = (
+				3CA499171AFB75ED00B4E6AE /* Sources */,
+				3CA499181AFB75ED00B4E6AE /* Frameworks */,
+				3CA499191AFB75ED00B4E6AE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3CA4991D1AFB75ED00B4E6AE /* PBXTargetDependency */,
+			);
+			name = LastfyTests;
+			productName = LastfyTests;
+			productReference = 3CA4991B1AFB75ED00B4E6AE /* LastfyTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3CA498FA1AFB75ED00B4E6AE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0630;
+				ORGANIZATIONNAME = "Paul Kuznetsov";
+				TargetAttributes = {
+					3CA499011AFB75ED00B4E6AE = {
+						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = FFASSW2393;
+					};
+					3CA4991A1AFB75ED00B4E6AE = {
+						CreatedOnToolsVersion = 6.3.1;
+						TestTargetID = 3CA499011AFB75ED00B4E6AE;
+					};
+				};
+			};
+			buildConfigurationList = 3CA498FD1AFB75ED00B4E6AE /* Build configuration list for PBXProject "Lastfy" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 3CA498F91AFB75ED00B4E6AE;
+			productRefGroup = 3CA499031AFB75ED00B4E6AE /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3CA499011AFB75ED00B4E6AE /* Lastfy */,
+				3CA4991A1AFB75ED00B4E6AE /* LastfyTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3CA499001AFB75ED00B4E6AE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3CA499111AFB75ED00B4E6AE /* Main.storyboard in Resources */,
+				3CA499161AFB75ED00B4E6AE /* LaunchScreen.xib in Resources */,
+				3CA499131AFB75ED00B4E6AE /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3CA499191AFB75ED00B4E6AE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		047FA7D7EFAFD012C51AA41E /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Lastfy/Pods-Lastfy-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7E38D6B05573F7FE26CDFEB4 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3CA498FE1AFB75ED00B4E6AE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3CA4990B1AFB75ED00B4E6AE /* AppDelegate.m in Sources */,
+				3CA499081AFB75ED00B4E6AE /* main.m in Sources */,
+				3CA499311AFB84F400B4E6AE /* LoginViewController.m in Sources */,
+				3CE0D3D11AFB999F003013A1 /* MainViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3CA499171AFB75ED00B4E6AE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3CA499221AFB75ED00B4E6AE /* LastfyTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3CA4991D1AFB75ED00B4E6AE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3CA499011AFB75ED00B4E6AE /* Lastfy */;
+			targetProxy = 3CA4991C1AFB75ED00B4E6AE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		3CA4990F1AFB75ED00B4E6AE /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3CA499101AFB75ED00B4E6AE /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		3CA499141AFB75ED00B4E6AE /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3CA499151AFB75ED00B4E6AE /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		3CA499231AFB75ED00B4E6AE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		3CA499241AFB75ED00B4E6AE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		3CA499261AFB75ED00B4E6AE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B67772E3CAD5830A998AD345 /* Pods-Lastfy.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = Lastfy/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		3CA499271AFB75ED00B4E6AE /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 829B71F2DF0C9C85CDF5AEB2 /* Pods-Lastfy.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = Lastfy/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		3CA499291AFB75ED00B4E6AE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = LastfyTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Lastfy.app/Lastfy";
+			};
+			name = Debug;
+		};
+		3CA4992A1AFB75ED00B4E6AE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = LastfyTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Lastfy.app/Lastfy";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3CA498FD1AFB75ED00B4E6AE /* Build configuration list for PBXProject "Lastfy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3CA499231AFB75ED00B4E6AE /* Debug */,
+				3CA499241AFB75ED00B4E6AE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3CA499251AFB75ED00B4E6AE /* Build configuration list for PBXNativeTarget "Lastfy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3CA499261AFB75ED00B4E6AE /* Debug */,
+				3CA499271AFB75ED00B4E6AE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3CA499281AFB75ED00B4E6AE /* Build configuration list for PBXNativeTarget "LastfyTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3CA499291AFB75ED00B4E6AE /* Debug */,
+				3CA4992A1AFB75ED00B4E6AE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3CA498FA1AFB75ED00B4E6AE /* Project object */;
+}
