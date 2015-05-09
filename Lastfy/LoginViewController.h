@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+extern NSString* const LastFMUserSessionKey;
+extern NSString* const LastFMUserLoginKey;
+
+extern NSString* const isFirstLaunchKey;
+
 @interface LoginViewController : UIViewController
 
 @end

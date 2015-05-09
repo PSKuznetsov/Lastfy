@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#include <LastFm/LastFm.h>
 
 @interface AppDelegate ()
 
@@ -17,6 +18,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    [LastFm sharedInstance].apiKey      = @"060423fae3c6a2ef953f5d3fef02176d";
+    [LastFm sharedInstance].apiSecret   = @"0104f33c5fe0a504fbb8665d1e8db7d4";
     return YES;
 }
 
