@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3C33FFB71AFFD3FD00E6D8D5 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C33FFB61AFFD3FD00E6D8D5 /* CoreData.framework */; };
+		3C33FFBA1AFFD47B00E6D8D5 /* lastfy_data.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3C33FFB81AFFD47B00E6D8D5 /* lastfy_data.xcdatamodeld */; };
 		3CA499081AFB75ED00B4E6AE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CA499071AFB75ED00B4E6AE /* main.m */; };
 		3CA4990B1AFB75ED00B4E6AE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CA4990A1AFB75ED00B4E6AE /* AppDelegate.m */; };
 		3CA499111AFB75ED00B4E6AE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3CA4990F1AFB75ED00B4E6AE /* Main.storyboard */; };
@@ -29,6 +31,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3C33FFB61AFFD3FD00E6D8D5 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		3C33FFB91AFFD47B00E6D8D5 /* lastfy_data.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = lastfy_data.xcdatamodel; sourceTree = "<group>"; };
 		3CA499021AFB75ED00B4E6AE /* Lastfy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lastfy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CA499061AFB75ED00B4E6AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3CA499071AFB75ED00B4E6AE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -54,6 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C33FFB71AFFD3FD00E6D8D5 /* CoreData.framework in Frameworks */,
 				73F67985BC6F3468D0B0EB77 /* libPods-Lastfy.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -130,6 +135,7 @@
 		3CA4992B1AFB761F00B4E6AE /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				3C33FFB81AFFD47B00E6D8D5 /* lastfy_data.xcdatamodeld */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -166,6 +172,7 @@
 		3E0E365445F66C035F4792CF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3C33FFB61AFFD3FD00E6D8D5 /* CoreData.framework */,
 				AD8216F4FC98F3E4F1BFC5D4 /* libPods-Lastfy.a */,
 			);
 			name = Frameworks;
@@ -316,6 +323,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C33FFBA1AFFD47B00E6D8D5 /* lastfy_data.xcdatamodeld in Sources */,
 				3CA4990B1AFB75ED00B4E6AE /* AppDelegate.m in Sources */,
 				3CA499081AFB75ED00B4E6AE /* main.m in Sources */,
 				3CA499311AFB84F400B4E6AE /* LoginViewController.m in Sources */,
@@ -532,6 +540,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		3C33FFB81AFFD47B00E6D8D5 /* lastfy_data.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				3C33FFB91AFFD47B00E6D8D5 /* lastfy_data.xcdatamodel */,
+			);
+			currentVersion = 3C33FFB91AFFD47B00E6D8D5 /* lastfy_data.xcdatamodel */;
+			name = lastfy_data.xcdatamodeld;
+			path = ../lastfy_data.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 3CA498FA1AFB75ED00B4E6AE /* Project object */;
 }
