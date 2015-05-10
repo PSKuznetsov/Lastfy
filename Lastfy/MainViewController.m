@@ -9,9 +9,11 @@
 #import "MainViewController.h"
 #import "LoginViewController.h"
 #import "CSAnimationView.h"
+#import "AppDelegate.h"
+
+#import <MediaPlayer/MediaPlayer.h>
 #import <LastFm/LastFm.h>
 #import <SDWebImage/UIImageView+WebCache.h>
-
 
 @interface MainViewController ()
 
@@ -30,15 +32,26 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    NSArray* mediaQuery = [[MPMediaQuery songsQuery]items];
     
+    for (MPMediaItem* item in mediaQuery) {
+        NSNumber* playCount  = [item valueForProperty:MPMediaItemPropertyPlayCount];
+        NSString* songTitle  = [item valueForProperty:MPMediaItemPropertyTitle];
+        NSString* albumTitle = [item valueForKey:MPMediaItemPropertyAlbumTitle];
+        
+        //NSLog(@"Album %@ song %@ has: %@",albumTitle ,songTitle, playCount);
+        [self saveSongDataToPersistentStoreWithAlbum:albumTitle
+                                           songTitle:songTitle
+                                        andPlayCount:playCount];
+    }
     
-    [LastFm sharedInstance].session = [[NSUserDefaults standardUserDefaults] objectForKey:LastFMUserSessionKey];
+  /*  [LastFm sharedInstance].session = [[NSUserDefaults standardUserDefaults] objectForKey:LastFMUserSessionKey];
     
     [[LastFm sharedInstance] sendScrobbledTrack:@"Wish You Were Here" byArtist:@"Pink Floyd" onAlbum:@"Wish You Were Here" withDuration:534 atTimestamp:(int)[[NSDate date] timeIntervalSince1970] successHandler:^(NSDictionary *result) {
         NSLog(@"result: %@", result);
     } failureHandler:^(NSError *error) {
         NSLog(@"error: %@", error);
-    }];
+    }];*/
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -81,6 +94,26 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 
+}
+
+#pragma mark - Data operations
+
+- (void)saveSongDataToPersistentStoreWithAlbum:(NSString *)album songTitle:(NSString *)title andPlayCount:(NSNumber *)playCount {
+    
+    AppDelegate* appDelegate = [[UIApplication sharedApplication] delegate];
+    
+    NSManagedObjectContext* context = [appDelegate managedObjectContext];
+   
+    NSManagedObject* currentSongObject = [NSEntityDescription
+                                          insertNewObjectForEntityForName:@"SongsData"
+                                                   inManagedObjectContext:context];
+    
+    [currentSongObject setValue:album     forKey:@"albumTitle"];
+    [currentSongObject setValue:title     forKey:@"songTitle"];
+    [currentSongObject setValue:playCount forKey:@"songPlayCount"];
+    
+    NSError* error;
+    [context save:&error];
 }
 
 #pragma mark - Actions
