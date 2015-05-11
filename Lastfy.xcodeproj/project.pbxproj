@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3C33FFB71AFFD3FD00E6D8D5 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C33FFB61AFFD3FD00E6D8D5 /* CoreData.framework */; };
 		3C33FFBA1AFFD47B00E6D8D5 /* lastfy_data.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3C33FFB81AFFD47B00E6D8D5 /* lastfy_data.xcdatamodeld */; };
+		3C998E3B1B010197004AB73F /* SongsData.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C998E3A1B010197004AB73F /* SongsData.m */; };
 		3CA499081AFB75ED00B4E6AE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CA499071AFB75ED00B4E6AE /* main.m */; };
 		3CA4990B1AFB75ED00B4E6AE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CA4990A1AFB75ED00B4E6AE /* AppDelegate.m */; };
 		3CA499111AFB75ED00B4E6AE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3CA4990F1AFB75ED00B4E6AE /* Main.storyboard */; };
@@ -33,6 +34,8 @@
 /* Begin PBXFileReference section */
 		3C33FFB61AFFD3FD00E6D8D5 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		3C33FFB91AFFD47B00E6D8D5 /* lastfy_data.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = lastfy_data.xcdatamodel; sourceTree = "<group>"; };
+		3C998E391B010197004AB73F /* SongsData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SongsData.h; sourceTree = "<group>"; };
+		3C998E3A1B010197004AB73F /* SongsData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SongsData.m; sourceTree = "<group>"; };
 		3CA499021AFB75ED00B4E6AE /* Lastfy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lastfy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CA499061AFB75ED00B4E6AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3CA499071AFB75ED00B4E6AE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -136,6 +139,8 @@
 			isa = PBXGroup;
 			children = (
 				3C33FFB81AFFD47B00E6D8D5 /* lastfy_data.xcdatamodeld */,
+				3C998E391B010197004AB73F /* SongsData.h */,
+				3C998E3A1B010197004AB73F /* SongsData.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -323,6 +328,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C998E3B1B010197004AB73F /* SongsData.m in Sources */,
 				3C33FFBA1AFFD47B00E6D8D5 /* lastfy_data.xcdatamodeld in Sources */,
 				3CA4990B1AFB75ED00B4E6AE /* AppDelegate.m in Sources */,
 				3CA499081AFB75ED00B4E6AE /* main.m in Sources */,

@@ -7,7 +7,9 @@
 //
 
 #import "LoginViewController.h"
+
 #import "MainViewController.h"
+
 #import <CSAnimationView.h>
 #import <LastFm/LastFm.h>
 
@@ -82,7 +84,7 @@ NSString* const isFirstLaunchKey        = @"isFirstLaunchKey";
     
     
         //Initial first launch of the App
-        [defaults setObject:@1 forKey:isFirstLaunchKey];
+        [defaults setObject:@0 forKey:isFirstLaunchKey];
         //Saving user Session and Login in defaults
         
         __weak typeof(self) weakSelf = self;

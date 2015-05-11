@@ -8,10 +8,15 @@
 
 #import "MainViewController.h"
 #import "LoginViewController.h"
+
 #import "CSAnimationView.h"
+
+#import "SongsData.h"
+
 #import "AppDelegate.h"
 
 #import <MediaPlayer/MediaPlayer.h>
+
 #import <LastFm/LastFm.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 
@@ -21,7 +26,12 @@
 @property (weak, nonatomic) IBOutlet UIImageView *userAvatarImageView;
 @property (weak, nonatomic) IBOutlet UILabel *usernameLabel;
 
+@property (strong, nonatomic) NSManagedObjectContext *context;
+@property (strong, nonatomic) NSArray* mediaQuery;
+@property (strong, nonatomic) NSArray* songsStoreInData;
+
 - (IBAction)logOutButton:(UIButton *)sender;
+- (IBAction)scrobbleButton:(UIButton *)sender;
 
 @end
 
@@ -32,26 +42,20 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    NSArray* mediaQuery = [[MPMediaQuery songsQuery]items];
+    AppDelegate* appDelegate        = [[UIApplication sharedApplication] delegate];
+    [LastFm sharedInstance].session = [[NSUserDefaults standardUserDefaults] objectForKey:LastFMUserSessionKey];
     
-    for (MPMediaItem* item in mediaQuery) {
-        NSNumber* playCount  = [item valueForProperty:MPMediaItemPropertyPlayCount];
-        NSString* songTitle  = [item valueForProperty:MPMediaItemPropertyTitle];
-        NSString* albumTitle = [item valueForKey:MPMediaItemPropertyAlbumTitle];
+    self.context    = [appDelegate managedObjectContext];
+    self.mediaQuery = [[MPMediaQuery songsQuery] items];
+    
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:isFirstLaunchKey] isEqual:@0]) {
         
-        //NSLog(@"Album %@ song %@ has: %@",albumTitle ,songTitle, playCount);
-        [self saveSongDataToPersistentStoreWithAlbum:albumTitle
-                                           songTitle:songTitle
-                                        andPlayCount:playCount];
+        [self initialScan];
+        [[NSUserDefaults standardUserDefaults] setObject:@1 forKey:isFirstLaunchKey];
+        
     }
     
-  /*  [LastFm sharedInstance].session = [[NSUserDefaults standardUserDefaults] objectForKey:LastFMUserSessionKey];
     
-    [[LastFm sharedInstance] sendScrobbledTrack:@"Wish You Were Here" byArtist:@"Pink Floyd" onAlbum:@"Wish You Were Here" withDuration:534 atTimestamp:(int)[[NSDate date] timeIntervalSince1970] successHandler:^(NSDictionary *result) {
-        NSLog(@"result: %@", result);
-    } failureHandler:^(NSError *error) {
-        NSLog(@"error: %@", error);
-    }];*/
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -59,6 +63,8 @@
     self.userAvatarView.backgroundColor = [UIColor colorWithRed:0.f green:0.f blue:0.f alpha:0.f];
     
     __weak typeof(self) weakSelf = self;
+    
+    //TODO: set user avatar outside the block(couse of animation bug);
     
     [[LastFm sharedInstance] getInfoForUserOrNil:[[NSUserDefaults standardUserDefaults]objectForKey:LastFMUserLoginKey]
                                   successHandler:^(NSDictionary *result) {
@@ -96,24 +102,151 @@
 
 }
 
+#pragma mark - Work with music library
+
+- (void)initialScan {
+    
+    for (MPMediaItem* item in self.mediaQuery) {
+        
+        NSNumber* playCount  = [item valueForProperty:MPMediaItemPropertyPlayCount];
+        NSString* songTitle  = [item valueForProperty:MPMediaItemPropertyTitle];
+        NSString* albumTitle = [item valueForKey:MPMediaItemPropertyAlbumTitle];
+        NSString* artist     = [item valueForProperty:MPMediaItemPropertyArtist];
+        NSNumber* duration   = [item valueForProperty:MPMediaItemPropertyPlaybackDuration];
+        
+        //NSLog(@"Album %@ song %@ has: %@",albumTitle ,songTitle, playCount);
+        [self saveSongDataToPersistentStoreWithArtist:artist albumTitle:albumTitle songTitle:songTitle duration:duration andPlayCount:playCount];
+    }
+    
+    
+    
+}
+
+- (void)scanLibraryForNewPlayCount {
+    
+    NSFetchRequest* fetchRequest = [[NSFetchRequest alloc] init];
+    
+    NSEntityDescription* entity = [NSEntityDescription entityForName:@"SongsData" inManagedObjectContext:self.context];
+    [fetchRequest setEntity:entity];
+    
+    NSError* requestError = nil;
+    
+    self.songsStoreInData = [self.context executeFetchRequest:fetchRequest error:&requestError];
+    
+    if ([self.songsStoreInData count] > 0) {
+        
+        for (SongsData* currentSongInData in self.songsStoreInData) {
+            
+            MPMediaItem* currentLibrarySong = [self findItemWithArtist:currentSongInData.artist
+                                                            albumTitle:currentSongInData.albumTitle
+                                                             songTitle:currentSongInData.songTitle];
+            if (currentLibrarySong != nil) {
+                
+                NSLog(@"Song has found!");
+                
+                NSUInteger currentPlayCount = [[currentLibrarySong valueForProperty:MPMediaItemPropertyPlayCount]unsignedIntegerValue];
+                NSUInteger storedPlayCount  = [currentSongInData.songPlayCount unsignedIntegerValue];
+                
+                NSLog(@"Stored play count: %lu new: %lu", (unsigned long)storedPlayCount, (unsigned long)currentPlayCount);
+                
+                if (storedPlayCount < currentPlayCount) {
+                    
+                    currentPlayCount -= storedPlayCount;
+                    NSNumber* playCount = [NSNumber numberWithUnsignedInteger:currentPlayCount];
+                    [self scrobbleTrackWithArtist:currentSongInData.artist
+                                       albumTitle:currentSongInData.albumTitle
+                                        songTitle:currentSongInData.songTitle
+                                         duration:currentSongInData.duration
+                                     andPlayCount:playCount];
+                }
+            }
+        }
+        
+    }
+    else {
+        NSLog(@"Could not find any SongsData entity in context");
+    }
+    
+}
+
+- (MPMediaItem *)findItemWithArtist:(NSString *)artist albumTitle:(NSString *)album songTitle:(NSString *)song {
+    
+    MPMediaPropertyPredicate* artistPredicate = [MPMediaPropertyPredicate predicateWithValue:artist
+                                                                                 forProperty:MPMediaItemPropertyArtist
+                                                                              comparisonType:MPMediaPredicateComparisonContains];
+    
+    MPMediaPropertyPredicate* albumPredicate = [MPMediaPropertyPredicate predicateWithValue:album
+                                                                                forProperty:MPMediaItemPropertyAlbumTitle
+                                                                             comparisonType:MPMediaPredicateComparisonContains];
+    
+    MPMediaPropertyPredicate* songPredicate = [MPMediaPropertyPredicate predicateWithValue:song
+                                                                               forProperty:MPMediaItemPropertyTitle
+                                                                            comparisonType:MPMediaPredicateComparisonContains];
+    
+    NSSet* predicates = [NSSet setWithObjects:artistPredicate, albumPredicate, songPredicate, nil];
+    
+    MPMediaQuery* songQuery = [[MPMediaQuery alloc] initWithFilterPredicates:predicates];
+    
+    NSArray* songsArr = [songQuery items];
+    
+    if ([songsArr count] == 1) {
+        return songsArr[0];
+    }
+    
+    return nil;
+}
+
+
 #pragma mark - Data operations
 
-- (void)saveSongDataToPersistentStoreWithAlbum:(NSString *)album songTitle:(NSString *)title andPlayCount:(NSNumber *)playCount {
-    
-    AppDelegate* appDelegate = [[UIApplication sharedApplication] delegate];
-    
-    NSManagedObjectContext* context = [appDelegate managedObjectContext];
+- (void)saveSongDataToPersistentStoreWithArtist:(NSString *)artist albumTitle:(NSString *)album
+                                      songTitle:(NSString *)song duration:(NSNumber *)duration
+                                   andPlayCount:(NSNumber *)playCount {
    
-    NSManagedObject* currentSongObject = [NSEntityDescription
-                                          insertNewObjectForEntityForName:@"SongsData"
-                                                   inManagedObjectContext:context];
+    SongsData* newSong = [NSEntityDescription insertNewObjectForEntityForName:@"SongsData"
+                                                       inManagedObjectContext:self.context];
     
-    [currentSongObject setValue:album     forKey:@"albumTitle"];
-    [currentSongObject setValue:title     forKey:@"songTitle"];
-    [currentSongObject setValue:playCount forKey:@"songPlayCount"];
+    if (newSong == nil) {
+        NSLog(@"Error creating new SongsData");
+    }
     
-    NSError* error;
-    [context save:&error];
+    newSong.artist        = artist;
+    newSong.albumTitle    = album;
+    newSong.songTitle     = song;
+    newSong.duration      = duration;
+    newSong.songPlayCount = playCount;
+    
+    NSError* savingError = nil;
+    
+    if (![self.context save:&savingError]) {
+        NSLog(@"%@",savingError);
+    }
+    
+}
+
+#pragma mark - Scrobbling
+
+- (void)scrobbleTrackWithArtist:(NSString *)artist albumTitle:(NSString *)album
+                       songTitle:(NSString *)song duration:(NSNumber *)duration
+                                              andPlayCount:(NSNumber *)playCount {
+    
+   
+        [[LastFm sharedInstance] sendScrobbledTrack:song
+                                           byArtist:artist
+                                            onAlbum:album
+                                       withDuration:[duration floatValue]
+                                        atTimestamp:(int)[[NSDate date] timeIntervalSince1970]
+                                     successHandler:^(NSDictionary *result) {
+                                     
+                                         NSLog(@"result: %@", result);
+                                     }
+                                     failureHandler:^(NSError *error) {
+                                     
+                                         NSLog(@"error: %@", error);
+                                     }];
+    [self saveSongDataToPersistentStoreWithArtist:artist albumTitle:album songTitle:song duration:duration andPlayCount:playCount];
+    
+    
 }
 
 #pragma mark - Actions
@@ -123,6 +256,11 @@
     [[LastFm sharedInstance] logout];
     [[NSUserDefaults standardUserDefaults] setObject:@0 forKey:isFirstLaunchKey];
     [self performSegueWithIdentifier:@"logoutToLoginVCSegue" sender:self];
+}
+
+- (IBAction)scrobbleButton:(UIButton *)sender {
+    
+    [self scanLibraryForNewPlayCount];
 }
 
 #pragma mark - Navigation
