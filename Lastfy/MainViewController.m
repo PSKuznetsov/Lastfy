@@ -19,6 +19,7 @@
 
 #import <LastFm/LastFm.h>
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <JGProgressHUD/JGProgressHUD.h>
 
 @interface MainViewController ()
 
@@ -29,6 +30,8 @@
 @property (strong, nonatomic) NSManagedObjectContext *context;
 @property (strong, nonatomic) NSArray* mediaQuery;
 @property (strong, nonatomic) NSArray* songsStoreInData;
+@property (strong, nonatomic) JGProgressHUD* initialHUD;
+@property (strong, nonatomic) JGProgressHUD* scrobbleHUD;
 
 - (IBAction)logOutButton:(UIButton *)sender;
 - (IBAction)scrobbleButton:(UIButton *)sender;
@@ -49,8 +52,13 @@
     self.mediaQuery = [[MPMediaQuery songsQuery] items];
     
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:isFirstLaunchKey] isEqual:@0]) {
+        //Showing HUD for the first launch
+        self.initialHUD = [JGProgressHUD progressHUDWithStyle:JGProgressHUDStyleDark];
+        self.initialHUD.textLabel.text = @"Scaninig your Music Library...";
+        [self.initialHUD showInView:self.view];
         
         [self initialScan];
+        //Set "1" to user dafaults
         [[NSUserDefaults standardUserDefaults] setObject:@1 forKey:isFirstLaunchKey];
         
     }
@@ -62,6 +70,12 @@
     
     self.userAvatarView.backgroundColor = [UIColor colorWithRed:0.f green:0.f blue:0.f alpha:0.f];
     
+    self.usernameLabel.text = [[NSUserDefaults standardUserDefaults] objectForKey:LastFMUserLoginKey];
+    [self.userAvatarImageView setImage:[UIImage imageNamed:@"placeholder"]];
+    self.userAvatarImageView.layer.cornerRadius = 50.f;
+    self.userAvatarImageView.clipsToBounds = YES;
+    
+    
     __weak typeof(self) weakSelf = self;
     
     //TODO: set user avatar outside the block(couse of animation bug);
@@ -71,20 +85,30 @@
                                       
                                       __strong typeof(self) strongSelf = weakSelf;
                                       
-                                      [strongSelf.userAvatarImageView sd_setImageWithURL:[result objectForKey:@"image"]];
-                                      
-                                      strongSelf.userAvatarImageView.layer.cornerRadius = 50.f;
-                                      strongSelf.userAvatarImageView.clipsToBounds = YES;
-                                      
-                                      strongSelf.usernameLabel.text = [[NSUserDefaults standardUserDefaults] objectForKey:LastFMUserLoginKey];
-                                      
-                                      //Setting Up Canvas animation for view
-                                      
-                                      [strongSelf.userAvatarView setType:CSAnimationTypePopDown];
-                                      [strongSelf.userAvatarView setDuration:0.3f];
-                                      [strongSelf.userAvatarView setDelay:0.f];
-                                      
-                                      [strongSelf.userAvatarView startCanvasAnimation];
+                                      SDWebImageManager *manager = [SDWebImageManager sharedManager];
+                                      [manager downloadImageWithURL:[result objectForKey:@"image"]
+                                                            options:0
+                                                           progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+                                                            
+                                                               //TODO: progress popup window
+                                                               
+                                                               
+                                                           }
+                                                          completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                                              if (image) {
+                                                                  
+                                                                  [strongSelf.userAvatarImageView setImage:image];
+                                                                  cacheType = SDImageCacheTypeDisk;
+                                                                  
+                                                                  [strongSelf.userAvatarView setType:CSAnimationTypePopDown];
+                                                                  [strongSelf.userAvatarView setDuration:0.4f];
+                                                                  [strongSelf.userAvatarView setDelay:0.f];
+                                                                  
+                                                                  [strongSelf.userAvatarView startCanvasAnimation];
+                                                                  
+                                                              }
+                                                          }];
+                             
                                       
                                   }
                                   failureHandler:^(NSError *error) {
@@ -118,7 +142,8 @@
         [self saveSongDataToPersistentStoreWithArtist:artist albumTitle:albumTitle songTitle:songTitle duration:duration andPlayCount:playCount];
     }
     
-    
+    self.initialHUD.textLabel.text = NSLocalizedString(@"Scan completed!", nil);
+    [self.initialHUD dismissAfterDelay:2.f];
     
 }
 
@@ -131,7 +156,9 @@
     
     NSError* requestError = nil;
     
-    self.songsStoreInData = [self.context executeFetchRequest:fetchRequest error:&requestError];
+    NSInteger scrobbleCount = 0;//var for number of the new songs to scrobble
+    
+    self.songsStoreInData = [self.context executeFetchRequest:fetchRequest error:&requestError];//getting all songs from CoreData
     
     if ([self.songsStoreInData count] > 0) {
         
@@ -142,30 +169,49 @@
                                                              songTitle:currentSongInData.songTitle];
             if (currentLibrarySong != nil) {
                 
-                NSLog(@"Song has found!");
+                //NSLog(@"Song has found!");
                 
                 NSUInteger currentPlayCount = [[currentLibrarySong valueForProperty:MPMediaItemPropertyPlayCount]unsignedIntegerValue];
                 NSUInteger storedPlayCount  = [currentSongInData.songPlayCount unsignedIntegerValue];
                 
-                NSLog(@"Stored play count: %lu new: %lu", (unsigned long)storedPlayCount, (unsigned long)currentPlayCount);
+                //Save changes in playCount
+                
+                [currentSongInData setValue:[NSNumber numberWithUnsignedInteger:currentPlayCount] forKey:@"songPlayCount"];
+                
+                NSError* error = nil;
+                if([self.context save:&error]) {
+                    NSLog(@"Song update: %@ - old count %d and new %d", currentSongInData.songTitle, storedPlayCount, currentPlayCount);
+                }
+                else {
+                    NSLog(@"error: %@", error);
+                }
+                
+                //NSLog(@"Stored play count: %lu new: %lu", (unsigned long)storedPlayCount, (unsigned long)currentPlayCount);
                 
                 if (storedPlayCount < currentPlayCount) {
                     
                     currentPlayCount -= storedPlayCount;
+                    
                     NSNumber* playCount = [NSNumber numberWithUnsignedInteger:currentPlayCount];
+                    
                     [self scrobbleTrackWithArtist:currentSongInData.artist
                                        albumTitle:currentSongInData.albumTitle
                                         songTitle:currentSongInData.songTitle
                                          duration:currentSongInData.duration
                                      andPlayCount:playCount];
+                    
+                    scrobbleCount++;
+                    
                 }
             }
+            
         }
-        
     }
     else {
         NSLog(@"Could not find any SongsData entity in context");
     }
+    
+    scrobbleCount = 0;
     
 }
 
@@ -223,6 +269,10 @@
     }
     
 }
+//TODO: update song database
+- (void)updateSong {
+    
+}
 
 #pragma mark - Scrobbling
 
@@ -244,8 +294,6 @@
                                      
                                          NSLog(@"error: %@", error);
                                      }];
-    [self saveSongDataToPersistentStoreWithArtist:artist albumTitle:album songTitle:song duration:duration andPlayCount:playCount];
-    
     
 }
 
@@ -259,7 +307,7 @@
 }
 
 - (IBAction)scrobbleButton:(UIButton *)sender {
-    
+    self.mediaQuery = [[MPMediaQuery songsQuery] items];
     [self scanLibraryForNewPlayCount];
 }
 

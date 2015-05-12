@@ -7,6 +7,8 @@ pod 'KissXML'
 pod 'LastFm'
 pod 'SDWebImage'
 pod 'Canvas'
+pod 'SVProgressHUD'
+pod 'JGProgressHUD'
 end
 
 target 'LastfyTests' do

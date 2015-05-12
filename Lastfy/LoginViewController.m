@@ -12,6 +12,7 @@
 
 #import <CSAnimationView.h>
 #import <LastFm/LastFm.h>
+#import <JGProgressHUD/JGProgressHUD.h>
 
 NSString* const LastFMUserSessionKey    = @"userSessionKey";
 NSString* const LastFMUserLoginKey      = @"userLoginKey";
@@ -23,6 +24,7 @@ NSString* const isFirstLaunchKey        = @"isFirstLaunchKey";
 @property (weak, nonatomic) IBOutlet UITextField *loginField;
 @property (weak, nonatomic) IBOutlet UITextField *passwordField;
 @property (weak, nonatomic) IBOutlet CSAnimationView* loginView;
+@property (assign, nonatomic) CGRect tempOriginYRect;
 
 - (IBAction)loginButton:(UIButton *)sender;
 
@@ -59,6 +61,10 @@ NSString* const isFirstLaunchKey        = @"isFirstLaunchKey";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    
     //Disabling Navigation Bar
     
     self.navigationController.navigationBar.hidden = YES;
@@ -67,6 +73,35 @@ NSString* const isFirstLaunchKey        = @"isFirstLaunchKey";
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma mark - keyboard movements
+
+- (void)keyboardWillShow:(NSNotification *)notification
+{
+    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        CGRect tempFrame = self.loginView.frame;
+        self.tempOriginYRect = tempFrame;
+        tempFrame.origin.y -=keyboardSize.height/2;
+        self.loginView.frame = tempFrame;
+    }];
+}
+
+-(void)keyboardWillHide:(NSNotification *)notification
+{
+    [UIView animateWithDuration:0.3 animations:^{
+        //CGRect tempFrame = self.loginView.frame;
+        //tempFrame.origin.y = 0.0f;
+        self.loginView.frame = self.tempOriginYRect;
+    }];
 }
 
 
@@ -85,6 +120,14 @@ NSString* const isFirstLaunchKey        = @"isFirstLaunchKey";
     
         //Initial first launch of the App
         [defaults setObject:@0 forKey:isFirstLaunchKey];
+    
+        //Show loading alertView while loggining
+    
+        JGProgressHUD* progressView = [JGProgressHUD progressHUDWithStyle:JGProgressHUDStyleDark];
+        progressView.textLabel.text = NSLocalizedString(@"Login In", nil);
+    
+        [progressView showInView:self.view];
+    
         //Saving user Session and Login in defaults
         
         __weak typeof(self) weakSelf = self;
@@ -103,11 +146,17 @@ NSString* const isFirstLaunchKey        = @"isFirstLaunchKey";
                                         [strongSelf.loginView setDelay:0.f];
                                         [strongSelf.loginView startCanvasAnimation];
                                         
+                                        progressView.textLabel.text = NSLocalizedString(@"Ok", nil);
+                                        [progressView dismiss];
+                                        
                                         [strongSelf performSegueWithIdentifier:@"segueToMainVC" sender:strongSelf];
                                     }
                                     failureHandler:^(NSError *error) {
                                         
                                         __strong typeof(self) strongSelf = weakSelf;
+                                        
+                                        //progressView.textLabel.text = NSLocalizedString(@"Failed", nil);
+                                        [progressView dismiss];
                                         
                                         [strongSelf.loginView setType:CSAnimationTypeShake];
                                         [strongSelf.loginView setDuration:0.3f];
