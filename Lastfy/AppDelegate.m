@@ -11,6 +11,7 @@
 #import "SongsData.h"
 
 #include <LastFm/LastFm.h>
+#include "LoginViewController.h"
 
 @interface AppDelegate ()
 
@@ -21,10 +22,44 @@
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
     // Override point for customization after application launch.
     [LastFm sharedInstance].apiKey      = @"060423fae3c6a2ef953f5d3fef02176d";
     [LastFm sharedInstance].apiSecret   = @"0104f33c5fe0a504fbb8665d1e8db7d4";
+    
+    //Check if this first lunch
+    
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    
+    if ([[defaults objectForKey:isFirstLaunchKey] isEqualToNumber:@1]) {
+        
+        [LastFm sharedInstance].username = [defaults objectForKey:LastFMUserLoginKey];
+        [LastFm sharedInstance].session  = [defaults objectForKey:LastFMUserSessionKey];
+        
+        UIViewController* rootController = [[UIStoryboard storyboardWithName:@"Main"
+                                                                      bundle:[NSBundle mainBundle]]
+                                            instantiateViewControllerWithIdentifier:@"MainViewController"];
+        
+        self.window.rootViewController = rootController;
+        
+    }
+    else {
+        
+        UIViewController* rootController = [[UIStoryboard storyboardWithName:@"Main"
+                                                                      bundle:[NSBundle mainBundle]]
+                                            instantiateViewControllerWithIdentifier:@"loginViewController"];
+        
+        UINavigationController* navigation = [[UINavigationController alloc] initWithRootViewController:rootController];
+        
+        self.window.rootViewController = navigation;
+        
+    }
+    
     return YES;
+}
+
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    
 }
 
 #pragma mark - Core Data stack

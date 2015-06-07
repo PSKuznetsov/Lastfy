@@ -12,23 +12,33 @@
 
 #import <CSAnimationView.h>
 #import <LastFm/LastFm.h>
-#import <JGProgressHUD/JGProgressHUD.h>
+
+
 
 NSString* const LastFMUserSessionKey    = @"userSessionKey";
 NSString* const LastFMUserLoginKey      = @"userLoginKey";
 
 NSString* const isFirstLaunchKey        = @"isFirstLaunchKey";
 
+
+
 @interface LoginViewController () <UITextFieldDelegate>
 
-@property (weak, nonatomic) IBOutlet UITextField *loginField;
-@property (weak, nonatomic) IBOutlet UITextField *passwordField;
-@property (weak, nonatomic) IBOutlet CSAnimationView* loginView;
-@property (assign, nonatomic) CGRect tempOriginYRect;
+@property (weak, nonatomic) IBOutlet UITextField     *loginField;
+@property (weak, nonatomic) IBOutlet UITextField     *passwordField;
+@property (weak, nonatomic) IBOutlet UILabel         *loginStatusLabel;
+@property (weak, nonatomic) IBOutlet CSAnimationView *loginView;
+
+@property (strong, nonatomic) IBOutlet UIImageView   *backgroudView;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *verticalSpaceConstraint;
+
+@property (assign, nonatomic) CGFloat constraintConstant;
 
 - (IBAction)loginButton:(UIButton *)sender;
 
 @end
+
+
 
 @implementation LoginViewController
 
@@ -42,32 +52,42 @@ NSString* const isFirstLaunchKey        = @"isFirstLaunchKey";
     self.loginField.delegate    = self;
     self.passwordField.delegate = self;
     
-    //Check if this first lunch
-    
-    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-    
-    if ([[defaults objectForKey:isFirstLaunchKey] isEqualToNumber:@1]) {
-        
-        [LastFm sharedInstance].username = [defaults objectForKey:LastFMUserLoginKey];
-        [LastFm sharedInstance].session  = [defaults objectForKey:LastFMUserSessionKey];
-        
-        [self performSegueWithIdentifier:@"segueToMainVC" sender:self];
-        
-    }
     
     
+    [self.loginView setType:CSAnimationTypeBounceUp];
+    [self.loginView setDuration:0.3f];
+    [self.loginView setDelay:0.f];
+    [self.loginView startCanvasAnimation];
+    
+    self.verticalSpaceConstraint.constant = 0.f;
+    self.constraintConstant = self.verticalSpaceConstraint.constant;
+    
+    //NSLog(@"Constant is: %f", self.constraintConstant);
     
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    
     
     //Disabling Navigation Bar
     
     self.navigationController.navigationBar.hidden = YES;
+    
+    //Subscribing keyboard notifications
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -83,54 +103,65 @@ NSString* const isFirstLaunchKey        = @"isFirstLaunchKey";
 
 #pragma mark - keyboard movements
 
-- (void)keyboardWillShow:(NSNotification *)notification
-{
+- (void)keyboardWillShow:(NSNotification *)notification {
+    
+    
     CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
     
+    
+    CGFloat newConstant = 0;
+    newConstant += keyboardSize.height/2;
+    
+    [self.loginView setNeedsUpdateConstraints];
+    //NSLog(@"%f",self.verticalSpaceConstraint.constant);
+    self.verticalSpaceConstraint.constant = newConstant;
+     //NSLog(@"%f",self.verticalSpaceConstraint.constant);
     [UIView animateWithDuration:0.3 animations:^{
-        CGRect tempFrame = self.loginView.frame;
-        self.tempOriginYRect = tempFrame;
-        tempFrame.origin.y -=keyboardSize.height/2;
-        self.loginView.frame = tempFrame;
+        
+        [self.loginView layoutIfNeeded];
+        
     }];
 }
 
--(void)keyboardWillHide:(NSNotification *)notification
-{
+- (void)keyboardWillHide:(NSNotification *)notification {
+    
+    //[self.loginView setNeedsUpdateConstraints];
+    
+    self.verticalSpaceConstraint.constant = self.constraintConstant;
+    
     [UIView animateWithDuration:0.3 animations:^{
-        //CGRect tempFrame = self.loginView.frame;
-        //tempFrame.origin.y = 0.0f;
-        self.loginView.frame = self.tempOriginYRect;
+        
+        [self.loginView layoutIfNeeded];
     }];
 }
 
 
 #pragma mark - Navigation
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-
+- (void)performSegueToMainView {
+    
+    [self performSegueWithIdentifier:@"segueToMainVC" sender:self];
 }
 
 #pragma mark - Actions
 
 - (IBAction)loginButton:(UIButton *)sender {
+    //TODO: replace HUD's with UILabels
+    self.loginStatusLabel.textColor = [UIColor grayColor];
+    self.loginStatusLabel.text = NSLocalizedString(@"Login in...", nil);
+    
+    //Resign first responder from textfields
+    [self.loginField resignFirstResponder];
+    [self.passwordField resignFirstResponder];
     
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     
+    //Initial first launch of the App
+    [defaults setObject:@0 forKey:isFirstLaunchKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     
-        //Initial first launch of the App
-        [defaults setObject:@0 forKey:isFirstLaunchKey];
-    
-        //Show loading alertView while loggining
-    
-        JGProgressHUD* progressView = [JGProgressHUD progressHUDWithStyle:JGProgressHUDStyleDark];
-        progressView.textLabel.text = NSLocalizedString(@"Login In", nil);
-    
-        [progressView showInView:self.view];
-    
-        //Saving user Session and Login in defaults
-        
-        __weak typeof(self) weakSelf = self;
+    //Saving user Session and Login in defaults
+    __weak typeof(self) weakSelf = self;
         
         [[LastFm sharedInstance] getSessionForUser:self.loginField.text
                                           password:self.passwordField.text
@@ -140,14 +171,13 @@ NSString* const isFirstLaunchKey        = @"isFirstLaunchKey";
                                         [[NSUserDefaults standardUserDefaults]setObject:[result objectForKey:@"name"] forKey:LastFMUserLoginKey];
                                         
                                         __strong typeof(self) strongSelf = weakSelf;
-                                        
+                                        strongSelf.loginStatusLabel.textColor = [UIColor greenColor];
+                                        strongSelf.loginStatusLabel.text = NSLocalizedString(@"Login successesful", nil);
+                                        //Setting up Canvas animation
                                         [strongSelf.loginView setType:CSAnimationTypeZoomIn];
                                         [strongSelf.loginView setDuration:0.3f];
                                         [strongSelf.loginView setDelay:0.f];
                                         [strongSelf.loginView startCanvasAnimation];
-                                        
-                                        progressView.textLabel.text = NSLocalizedString(@"Ok", nil);
-                                        [progressView dismiss];
                                         
                                         [strongSelf performSegueWithIdentifier:@"segueToMainVC" sender:strongSelf];
                                     }
@@ -155,15 +185,12 @@ NSString* const isFirstLaunchKey        = @"isFirstLaunchKey";
                                         
                                         __strong typeof(self) strongSelf = weakSelf;
                                         
-                                        //progressView.textLabel.text = NSLocalizedString(@"Failed", nil);
-                                        [progressView dismiss];
-                                        
                                         [strongSelf.loginView setType:CSAnimationTypeShake];
                                         [strongSelf.loginView setDuration:0.3f];
                                         [strongSelf.loginView setDelay:0.f];
                                         [strongSelf.loginView startCanvasAnimation];
-                                        
-                                        
+                                        strongSelf.loginStatusLabel.textColor = [UIColor redColor];
+                                        strongSelf.loginStatusLabel.text = NSLocalizedString(@"Wrong login or password. Try again.", nil);
                                         
                                     }];
     
@@ -187,6 +214,15 @@ NSString* const isFirstLaunchKey        = @"isFirstLaunchKey";
     }
     
     return YES;
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+    NSCharacterSet *cs = [[NSCharacterSet characterSetWithCharactersInString:@"._@0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"] invertedSet];
+    
+    NSString *filtered = [[string componentsSeparatedByCharactersInSet:cs] componentsJoinedByString:@""];
+    
+    return [string isEqualToString:filtered];
 }
 
 @end

@@ -10,6 +10,7 @@
 #import "LoginViewController.h"
 
 #import "CSAnimationView.h"
+#import "KLCPopup.h"
 
 #import "SongsData.h"
 
@@ -19,19 +20,26 @@
 
 #import <LastFm/LastFm.h>
 #import <SDWebImage/UIImageView+WebCache.h>
-#import <JGProgressHUD/JGProgressHUD.h>
+#import <EFCircularSlider.h>
+
+NSString* const LastfyDidEndScrobblingNotification = @"LastfyDidEndScrobblingNotification";
 
 @interface MainViewController ()
 
 @property (weak, nonatomic) IBOutlet CSAnimationView *userAvatarView;
-@property (weak, nonatomic) IBOutlet UIImageView *userAvatarImageView;
-@property (weak, nonatomic) IBOutlet UILabel *usernameLabel;
 
-@property (strong, nonatomic) NSManagedObjectContext *context;
-@property (strong, nonatomic) NSArray* mediaQuery;
-@property (strong, nonatomic) NSArray* songsStoreInData;
-@property (strong, nonatomic) JGProgressHUD* initialHUD;
-@property (strong, nonatomic) JGProgressHUD* scrobbleHUD;
+@property (weak, nonatomic) IBOutlet UIImageView    *userAvatarImageView;
+@property (weak, nonatomic) IBOutlet UILabel        *usernameLabel;
+@property (strong, nonatomic) IBOutlet UIImageView    *backgroundImageView;
+@property (weak, nonatomic) IBOutlet UILabel        *userScrobblesLabel;
+@property (weak, nonatomic) IBOutlet UIButton       *scrobbleButton;
+@property (weak, nonatomic) IBOutlet UILabel        *scrobbleLabel;
+@property (strong, nonatomic) IBOutlet UIView       *popupView;
+
+@property (strong, nonatomic) EFCircularSlider          *slider;
+@property (strong, nonatomic) NSManagedObjectContext    *context;
+@property (strong, nonatomic) NSArray                   *mediaQuery;
+@property (strong, nonatomic) NSArray                   *songsStoreInData;
 
 - (IBAction)logOutButton:(UIButton *)sender;
 - (IBAction)scrobbleButton:(UIButton *)sender;
@@ -45,22 +53,39 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    AppDelegate* appDelegate        = [[UIApplication sharedApplication] delegate];
-    [LastFm sharedInstance].session = [[NSUserDefaults standardUserDefaults] objectForKey:LastFMUserSessionKey];
+    AppDelegate* appDelegate = [[UIApplication sharedApplication] delegate];
+                self.context = [appDelegate managedObjectContext];
     
-    self.context    = [appDelegate managedObjectContext];
+    [LastFm sharedInstance].session = [[NSUserDefaults standardUserDefaults] objectForKey:LastFMUserSessionKey];
     self.mediaQuery = [[MPMediaQuery songsQuery] items];
     
+    CGRect frame = CGRectMake(self.scrobbleButton.frame.origin.x - 5,
+                              self.scrobbleButton.frame.origin.y - 5,
+                              self.scrobbleButton.frame.size.width + 10,
+                              self.scrobbleButton.frame.size.height + 10);
+    
+    self.slider = [[EFCircularSlider alloc] initWithFrame:frame];
+    
+    self.slider.handleColor   = [UIColor clearColor];
+    self.slider.unfilledColor = [UIColor clearColor];
+    self.slider.filledColor   = [UIColor colorWithWhite:1 alpha:0.5];
+    self.slider.lineWidth = 5.f;
+    
+    //[self.view addSubview:self.slider];
+    //[self.slider addTarget:self action:@selector(newValue:) forControlEvents:UIControlEventValueChanged];
+    
+    //self.slider.hidden = YES;
+    
+    //NSUserDefaults
+    
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:isFirstLaunchKey] isEqual:@0]) {
-        //Showing HUD for the first launch
-        self.initialHUD = [JGProgressHUD progressHUDWithStyle:JGProgressHUDStyleDark];
-        self.initialHUD.textLabel.text = @"Scaninig your Music Library...";
-        [self.initialHUD showInView:self.view];
+        
         
         [self initialScan];
+        
         //Set "1" to user dafaults
         [[NSUserDefaults standardUserDefaults] setObject:@1 forKey:isFirstLaunchKey];
-        
+        [[NSUserDefaults standardUserDefaults] synchronize];
     }
     
     
@@ -68,17 +93,27 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     
+    //popup corner radius
+    self.popupView.layer.cornerRadius = 10.f;
+    self.popupView.clipsToBounds = YES;
+    
+    //Start button pulse animation
+    [self pulseAnimationForView:self.scrobbleButton animated:YES];
+    
+    
+    //Setting up user avatar and nick
     self.userAvatarView.backgroundColor = [UIColor colorWithRed:0.f green:0.f blue:0.f alpha:0.f];
     
     self.usernameLabel.text = [[NSUserDefaults standardUserDefaults] objectForKey:LastFMUserLoginKey];
-    [self.userAvatarImageView setImage:[UIImage imageNamed:@"placeholder"]];
-    self.userAvatarImageView.layer.cornerRadius = 50.f;
-    self.userAvatarImageView.clipsToBounds = YES;
     
+    [self.userAvatarImageView setImage:[UIImage imageNamed:@"placeholder"]];
+    
+    self.userAvatarImageView.clipsToBounds = YES;
+    self.userAvatarImageView.layer.cornerRadius = 50.f;
     
     __weak typeof(self) weakSelf = self;
     
-    //TODO: set user avatar outside the block(couse of animation bug);
+    //TODO: user avatar cache
     
     [[LastFm sharedInstance] getInfoForUserOrNil:[[NSUserDefaults standardUserDefaults]objectForKey:LastFMUserLoginKey]
                                   successHandler:^(NSDictionary *result) {
@@ -90,7 +125,7 @@
                                                             options:0
                                                            progress:^(NSInteger receivedSize, NSInteger expectedSize) {
                                                             
-                                                               //TODO: progress popup window
+    //TODO: progress popup window
                                                                
                                                                
                                                            }
@@ -108,6 +143,8 @@
                                                                   
                                                               }
                                                           }];
+                                      
+                                      strongSelf.userScrobblesLabel.text = [NSString stringWithFormat:@"%@ tracks scrobbled", [result objectForKey:@"playcount"]];
                              
                                       
                                   }
@@ -117,19 +154,52 @@
                                       NSLog(@"%@", errorString);
                                       
                                   }];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(startPulseAnimation)
+                                                 name:UIApplicationDidBecomeActiveNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(scrobblingDidFinished)
+                                                 name:LastfyDidEndScrobblingNotification
+                                               object:nil];
 
 }
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 
 }
 
+- (void)dealloc {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma mark - Touches
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    CGPoint location = [touches.anyObject locationInView:self.userAvatarImageView];
+    
+    if (CGRectContainsPoint(self.userAvatarImageView.bounds, location)) {
+       
+        self.popupView.hidden = NO;
+        KLCPopup* popup = [KLCPopup popupWithContentView:self.popupView];
+        
+        [popup show];
+    }
+    
+}
+
 #pragma mark - Work with music library
 
 - (void)initialScan {
     
+    self.scrobbleLabel.text = NSLocalizedString(@"Scanning...", nil);
+    
+    //Analyzing whole user media library and save current state in CoreData
     for (MPMediaItem* item in self.mediaQuery) {
         
         NSNumber* playCount  = [item valueForProperty:MPMediaItemPropertyPlayCount];
@@ -139,11 +209,13 @@
         NSNumber* duration   = [item valueForProperty:MPMediaItemPropertyPlaybackDuration];
         
         //NSLog(@"Album %@ song %@ has: %@",albumTitle ,songTitle, playCount);
-        [self saveSongDataToPersistentStoreWithArtist:artist albumTitle:albumTitle songTitle:songTitle duration:duration andPlayCount:playCount];
+        [self saveSongDataToPersistentStoreWithArtist:artist
+                                           albumTitle:albumTitle
+                                            songTitle:songTitle
+                                             duration:duration
+                                         andPlayCount:playCount];
     }
-    
-    self.initialHUD.textLabel.text = NSLocalizedString(@"Scan completed!", nil);
-    [self.initialHUD dismissAfterDelay:2.f];
+    [self performSelector:@selector(defaultScrobbleLabelText) withObject:self afterDelay:5.f];
     
 }
 
@@ -180,10 +252,10 @@
                 
                 NSError* error = nil;
                 if([self.context save:&error]) {
-                    NSLog(@"Song update: %@ - old count %d and new %d", currentSongInData.songTitle, storedPlayCount, currentPlayCount);
+                    //NSLog(@"Song update: %@ - old count %d and new %d", currentSongInData.songTitle, storedPlayCount, currentPlayCount);
                 }
                 else {
-                    NSLog(@"error: %@", error);
+                    //NSLog(@"error: %@", error);
                 }
                 
                 //NSLog(@"Stored play count: %lu new: %lu", (unsigned long)storedPlayCount, (unsigned long)currentPlayCount);
@@ -210,6 +282,13 @@
     else {
         NSLog(@"Could not find any SongsData entity in context");
     }
+    
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:LastfyDidEndScrobblingNotification object:nil];
+    
+    self.scrobbleLabel.text = [NSString stringWithFormat:@"Found %ld scrobbles", (long)scrobbleCount];
+    
+    [self pulseAnimationForView:self.scrobbleButton animated:YES];
     
     scrobbleCount = 0;
     
@@ -269,10 +348,6 @@
     }
     
 }
-//TODO: update song database
-- (void)updateSong {
-    
-}
 
 #pragma mark - Scrobbling
 
@@ -298,17 +373,57 @@
 }
 
 #pragma mark - Actions
-
+//TODO: Alert View for logout button
 - (IBAction)logOutButton:(UIButton *)sender {
     
     [[LastFm sharedInstance] logout];
+    
     [[NSUserDefaults standardUserDefaults] setObject:@0 forKey:isFirstLaunchKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    [KLCPopup dismissAllPopups];
     [self performSegueWithIdentifier:@"logoutToLoginVCSegue" sender:self];
 }
 
 - (IBAction)scrobbleButton:(UIButton *)sender {
+    
+    [self pulseAnimationForView:self.scrobbleButton animated:NO];
+    
+    self.scrobbleLabel.text = @"Searching...";
+    
     self.mediaQuery = [[MPMediaQuery songsQuery] items];
-    [self scanLibraryForNewPlayCount];
+    
+    [self performSelectorInBackground:@selector(scanLibraryForNewPlayCount) withObject:nil];
+}
+
+#pragma mark - Animation
+
+- (void)pulseAnimationForView:(UIView *)view animated:(BOOL)animated {
+    
+    //Pulse animation
+    CABasicAnimation *theAnimation = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
+    
+    theAnimation.duration     = 0.9f;
+    theAnimation.repeatCount  = HUGE_VALF;
+    theAnimation.autoreverses = YES;
+    
+    theAnimation.fromValue = [NSNumber numberWithFloat: 1.0f];
+    theAnimation.toValue   = [NSNumber numberWithFloat: 1.05f];
+    
+    if (animated) {
+       
+        [view.layer addAnimation:theAnimation forKey:@"animateOpacity"];
+        
+    }
+    else {
+        
+        [view.layer removeAnimationForKey:@"animateOpacity"];
+    }
+    
+}
+
+- (void)startPulseAnimation {
+    
+    [self pulseAnimationForView:self.scrobbleButton animated:YES];
 }
 
 #pragma mark - Navigation
@@ -319,5 +434,15 @@
 
 #pragma mark - Helpers
 
+- (void)defaultScrobbleLabelText {
+    
+    self.scrobbleLabel.text = @"Touch to Scrobble";
+}
+
+- (void)scrobblingDidFinished {
+    
+    [self performSelector:@selector(defaultScrobbleLabelText) withObject:nil afterDelay:13.f];;
+    
+}
 
 @end
