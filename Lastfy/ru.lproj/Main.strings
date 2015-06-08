@@ -1,0 +1,27 @@
+
+/* Class = "UILabel"; text = "Touch to Scrobble"; ObjectID = "AaD-yV-XmN"; */
+"AaD-yV-XmN.text" = "Touch to Scrobble";
+
+/* Class = "UITextField"; placeholder = "Last.fm login"; ObjectID = "Oil-9z-Zaa"; */
+"Oil-9z-Zaa.placeholder" = "Last.fm login";
+
+/* Class = "UILabel"; text = "0 tracks scrobbled"; ObjectID = "PSh-pT-5ae"; */
+"PSh-pT-5ae.text" = "0 tracks scrobbled";
+
+/* Class = "UILabel"; text = "Lastfy"; ObjectID = "PXv-re-v9o"; */
+"PXv-re-v9o.text" = "Lastfy";
+
+/* Class = "UIButton"; normalTitle = "Log in"; ObjectID = "RZN-M1-Jeg"; */
+"RZN-M1-Jeg.normalTitle" = "Log in";
+
+/* Class = "UILabel"; text = "Lastfy"; ObjectID = "Sie-yr-uxH"; */
+"Sie-yr-uxH.text" = "Lastfy";
+
+/* Class = "UIButton"; normalTitle = "Log out"; ObjectID = "gTN-5d-Yf8"; */
+"gTN-5d-Yf8.normalTitle" = "Log out";
+
+/* Class = "UITextField"; placeholder = "Last.fm password"; ObjectID = "iYN-WF-Tg7"; */
+"iYN-WF-Tg7.placeholder" = "Last.fm password";
+
+/* Class = "UILabel"; text = "Log in to"; ObjectID = "xKz-nG-NKr"; */
+"xKz-nG-NKr.text" = "Log in to";
